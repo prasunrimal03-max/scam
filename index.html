@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Congratulations — You got a prize!</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#0f1724; --accent:#ffcc00; --muted:#bfc7d9;
+  }
+  body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:
+    linear-gradient(180deg,#07101a 0%, #0b1730 100%); color:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh;}
+  .container{width:360px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.6); padding:22px; text-align:center; border:1px solid rgba(255,255,255,0.03);}
+  .logo{font-weight:700; color:var(--accent); letter-spacing:1px; font-size:18px;}
+  h1{margin:14px 0 6px; font-size:20px;}
+  p.lead{color:var(--muted); margin:0 0 18px; font-size:13px;}
+  .prize-card{background:linear-gradient(90deg,#081021,#0e1a33); border-radius:12px; padding:14px; margin-bottom:18px; border:1px solid rgba(255,255,255,0.02);}
+  .big-prize{font-size:28px; font-weight:800; color:var(--accent);}
+  .btn{display:inline-block; margin-top:8px; padding:12px 20px; border-radius:12px; background:linear-gradient(180deg,#ffd84a,#ffb500); color:#111; font-weight:700; text-decoration:none; box-shadow:0 6px 18px rgba(255,181,0,0.12); border:none; cursor:pointer; font-size:15px;}
+  .small{font-size:12px; color:var(--muted); margin-top:10px;}
+  footer{font-size:11px; color:#f3dca0; margin-top:14px;}
+  /* modal */
+  .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:linear-gradient(0deg, rgba(2,6,23,0.7), rgba(2,6,23,0.7)); z-index:50;}
+  .modal{width:360px; max-width:96%; background:#071126; border-radius:12px; padding:18px; border:1px solid rgba(255,255,255,0.04); text-align:center; box-shadow:0 20px 60px rgba(2,6,23,0.7);}
+  .modal h2{margin:6px 0 2px; color:var(--accent);}
+  .modal p{color:var(--muted); margin:0 0 12px;}
+  .close{margin-top:8px; padding:10px 16px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted); cursor:pointer;}
+  .prop-tag{display:inline-block; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:8px; font-size:11px; color:#ffd; margin-top:10px;}
+  /* confetti simple */
+  .confetti{position:absolute; width:8px; height:14px; background:var(--accent); opacity:0; transform:translateY(-20px) scale(0.6); border-radius:2px; animation:fall 900ms ease-out forwards;}
+  @keyframes fall {
+    to{opacity:1; transform:translateY(260px) rotate(360deg) scale(1);}
+  }
+</style>
+</head>
+<body>
+  <div class="container" role="main" aria-labelledby="title">
+    <div class="logo">BRIGHTWAVE PROMO</div>
+    <h1 id="title">You’re a lucky winner!</h1>
+    <p class="lead">Claim your instant prize — this page is a prop for filming. No real prize is delivered.</p>
+
+    <div class="prize-card" aria-hidden="false">
+      <div class="big-prize">₨ 10,000 Gift Voucher</div>
+      <div style="margin-top:8px;"><small class="small">Valid for one-time use • Expires: 31 Dec, 2025</small></div>
+    </div>
+
+    <button id="claimBtn" class="btn" aria-label="Get the prize">Get the prize</button>
+
+    <div class="prop-tag">PROP / FOR FILM USE ONLY</div>
+
+    <footer>Do not enter real personal details. This page is for visual effect in your production.</footer>
+  </div>
+
+  <!-- modal -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Congratulations!</h2>
+      <p>Your prize is ready. Click below to download your voucher (fake, for film).</p>
+      <button id="downloadBtn" class="btn">Download Voucher</button>
+      <div style="margin-top:10px;">
+        <button id="closeBtn" class="close">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Simple prop behaviour: plays a sound (optional), shows modal, creates a harmless fake voucher file for download.
+  const claimBtn = document.getElementById('claimBtn');
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.getElementById('closeBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  // Small confetti spawn for film look
+  function spawnConfetti() {
+    for (let i=0;i<16;i++){
+      const c=document.createElement('div');
+      c.className='confetti';
+      c.style.left=(20 + Math.random()*320)+'px';
+      c.style.background=['#ffcc00','#ff66cc','#66ffcc','#66ccff'][Math.floor(Math.random()*4)];
+      c.style.animationDuration=(700+Math.random()*800)+'ms';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),1500);
+    }
+  }
+
+  // Optional sound (HTML5 Audio). You can comment this out or replace with your sound file.
+  const ding = new Audio();
+  // Using a tiny embedded beep via data URI (sine click) so file stays local and harmless
+  ding.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YRgAAAAA"; // silent placeholder
+  // On claim
+  claimBtn.addEventListener('click', ()=>{
+    // play sound if available - for filming you can replace ding.src with a real local file
+    try{ ding.play().catch(()=>{}); }catch(e){}
+    overlay.style.display='flex';
+    spawnConfetti();
+  });
+  closeBtn.addEventListener('click', ()=>{ overlay.style.display='none'; });
+
+  // Create & download fake voucher (harmless text file)
+  downloadBtn.addEventListener('click', ()=>{
+    const voucherText = [
+      "BRIGHTWAVE PROMOTIONAL VOUCHER - PROP ONLY",
+      "Amount: NPR 10,000 (visual prop only)",
+      "Voucher Code: FILM-PRP-2025",
+      "This voucher is NOT valid and contains no redeemable value. For film/prop use only."
+    ].join("\\n");
+    const blob = new Blob([voucherText], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'voucher-prop.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    // show fake success message
+    downloadBtn.textContent = 'Downloaded';
+    setTimeout(()=> downloadBtn.textContent = 'Download Voucher', 1200);
+  });
+
+  // Accessibility: close modal with Escape
+  document.addEventListener('keydown', (e)=> {
+    if (e.key === 'Escape' && overlay.style.display === 'flex') overlay.style.display='none';
+  });
+</script>
+</body>
+</html>
